@@ -3,7 +3,6 @@ module Loader
   getResult
   ) where
 import qualified Language.Haskell.Interpreter as Hint
-import qualified Solutions
 
 parseFunc :: String -> Hint.Interpreter ()
 parseFunc func = do
