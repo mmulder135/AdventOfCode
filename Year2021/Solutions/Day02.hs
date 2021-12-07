@@ -1,4 +1,4 @@
-module Solutions.Day02
+module Year2021.Solutions.Day02
 ( d2sol1,
   d2sol2,
   d2test1,
@@ -12,7 +12,7 @@ example :: [Instr]
 example = [Forward 5, Down 5, Forward 8, Up 3, Down 8, Forward 2]
 
 input :: IO [Instr]
-input = parseInput <$> words <$> readFile "Inputs/Day02.txt"
+input = parseInput <$> words <$> readFile "Year2021/Inputs/Day02.txt"
 
 sol1 :: [Instr] -> Int
 sol1 x = move_hor x * move_dep x

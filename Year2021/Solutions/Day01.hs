@@ -1,4 +1,4 @@
-module Solutions.Day01
+module Year2021.Solutions.Day01
 ( d1sol1,
   d1sol2,
   d1test1,
@@ -10,7 +10,7 @@ example :: [Int]
 example = [199,200,208,210,200,207,240,269,260,263]
 
 input :: IO [Int]
-input = (map read) <$> words <$> readFile "Inputs/Day01.txt"
+input = (map read) <$> words <$> readFile "Year2021/Inputs/Day01.txt"
 
 sol1 :: [Int] -> Int
 sol1 = cntLarger

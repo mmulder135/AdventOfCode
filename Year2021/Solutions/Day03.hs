@@ -1,4 +1,4 @@
-module Solutions.Day03
+module Year2021.Solutions.Day03
 ( d3sol1,
   d3sol2,
   d3test1,
@@ -18,7 +18,7 @@ example :: [String]
 example = ["00100","11110","10110","10111","10101","01111","00111","11100","10000","11001","00010","01010"]
 
 input :: IO [String]
-input = words <$> readFile "Inputs/Day03.txt"
+input = words <$> readFile "Year2021/Inputs/Day03.txt"
 
 -- sol1
 power_cons :: [String] -> Int

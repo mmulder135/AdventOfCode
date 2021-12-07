@@ -1,24 +1,32 @@
 module Loader
   (
-  getResult
+  runFile
   ) where
 import qualified Language.Haskell.Interpreter as Hint
+say :: String -> Hint.Interpreter ()
+say = Hint.liftIO . putStrLn
 
-parseFunc :: String -> Hint.Interpreter ()
-parseFunc func = do
-  Hint.loadModules ["Solutions.hs"]
-  Hint.setImports ["Prelude","Solutions","System.IO.Unsafe"]
-  a <- Hint.eval func
-  Hint.liftIO $ print a
+parseFunc :: String -> [(String,String)] -> Hint.Interpreter ()
+parseFunc year funcs = do
+  Hint.loadModules ["Year" ++ year ++ ".Solutions"]
+  Hint.setImports ["Prelude","Year" ++ year ++ ".Solutions","System.IO.Unsafe"]
+  mapM_ parse funcs
+  where
+    parse (func, name) = do
+        a <- Hint.eval func
+        say $ name ++ show a
 
-runFunc :: String -> IO ()
-runFunc func  = do
-  r <- Hint.runInterpreter $ parseFunc func
+runFunc :: String -> [(String,String)] -> IO ()
+runFunc year funcs  = do
+  r <- Hint.runInterpreter $ parseFunc year funcs
   case r of
-    Left err -> putStrLn $ "Could not run function " ++ func
+    Left err -> putStrLn $ "Could not run functions"
     Right x -> return x
 
-getResult :: String -> Bool -> IO ()
-getResult str io
-        | io = runFunc $ "unsafePerformIO Solutions." ++ str
-        | otherwise = runFunc $ "Solutions." ++ str
+getFuncName :: String -> String -> Bool -> String
+getFuncName year func io
+        | io = "unsafePerformIO Year" ++ year ++ ".Solutions." ++ func
+        | otherwise = "Year" ++ year ++ ".Solutions." ++ func
+
+runFile :: String -> [(String,Bool,String)] -> IO ()
+runFile year funcs = runFunc year $ map (\(func,io,str) -> ((getFuncName year func io),str)) funcs

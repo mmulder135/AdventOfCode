@@ -1,4 +1,4 @@
-module Solutions.Day07
+module Year2021.Solutions.Day07
 ( d7sol1,
   d7sol2,
   d7test1,
@@ -11,7 +11,7 @@ import Data.List (sort)
 example :: [Int]
 example = [16,1,2,0,4,2,7,1,2,14]
 input :: IO [Int]
-input = map read <$> split "," <$> readFile "Inputs/Day07.txt"
+input = map read <$> split "," <$> readFile "Year2021/Inputs/Day07.txt"
 
 sol1 :: [Int] -> Int
 sol1 xs = sum $ map cost xs

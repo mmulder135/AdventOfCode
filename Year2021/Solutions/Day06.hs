@@ -1,4 +1,4 @@
-module Solutions.Day06
+module Year2021.Solutions.Day06
     ( d6sol1,
       d6sol2,
       d6test1,
@@ -13,7 +13,7 @@ exampleS :: MS.MultiSet Int
 exampleS = MS.fromList [3,4,3,1,2]
 
 inputS :: IO (MS.MultiSet Int)
-inputS = MS.fromList <$> map read <$> split "," <$> readFile "Inputs/Day06.txt"
+inputS = MS.fromList <$> map read <$> split "," <$> readFile "Year2021/Inputs/Day06.txt"
 
 sol1S :: MS.MultiSet Int -> Int
 sol1S = MS.size . runS 80
@@ -34,7 +34,7 @@ example :: [Int]
 example = [3,4,3,1,2]
 
 input :: IO [Int]
-input = map read <$> split "," <$> readFile "Inputs/Day06.txt"
+input = map read <$> split "," <$> readFile "Year2021/Inputs/Day06.txt"
 
 sol1 :: [Int] -> Int
 sol1 = calc 80

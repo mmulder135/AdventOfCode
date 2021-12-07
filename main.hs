@@ -1,7 +1,9 @@
 import System.Environment (getArgs)
+import System.Directory (listDirectory)
 import Text.Read (readMaybe)
-import qualified Solutions
-import qualified Loader (getResult)
+import Data.List.Utils (split)
+import Data.List (sort)
+import qualified Loader (runFile)
 
 main :: IO ()
 main = do
@@ -9,29 +11,35 @@ main = do
   runDay args
 
 usage :: String
-usage = "Usage: main [day] ?[part]"
+usage = "Usage: main [year] [day] ?[part]"
 
 runDay :: [String] -> IO ()
-runDay [day] = do
-  putStrLn ("Solutions for day " ++ day)
-  runTest day "1"
-  runPart day "1"
-  runTest day "2"
-  runPart day "2"
-runDay [day,part] = do
-  putStrLn ("Solution for day " ++ day ++ " part " ++ part)
-  runTest day part
-  runPart day part
+runDay [year] = do
+  putStrLn ("All solutions of " ++ year)
+  solutions <- listDirectory ("Year"++year++"/Solutions")
+  let day = (read::String->Int) $ last  $  split "y"  $  head  $  split "."  $  last $ sort $ solutions
+  let yearDayArray = map (\y -> [year,(show y)]) [1..day]
+  mapM_ runDayWithoutTest yearDayArray
+runDay [year,day] = do
+  putStrLn ("Solutions for day " ++ day ++ " of " ++ year)
+  let funcs = [(test day "1"),(sol day "1"),(test day "2"),(sol day "2")]
+  t1 <- Loader.runFile year funcs
+  return t1
+runDay [year,day,part] = do
+  let funcs = [(test day part),(sol day part)]
+  t1 <- Loader.runFile year funcs
+  return t1
 runDay _ = putStrLn usage
 
-runPart :: String -> String -> IO ()
-runPart day part  = do
-  putStr ("Solution for part " ++ part ++ ": ")
-  t1 <- Loader.getResult ("d" ++ day ++ "sol" ++ part) True
-  return t1
+runDayWithoutTest :: [String] -> IO ()
+runDayWithoutTest [year,day] = do
+  putStrLn ("Solutions for day " ++ day)
+  let funcs = [(sol day "1"),(sol day "2")]
+  t1 <- Loader.runFile year funcs
+  putStrLn ""
 
-runTest :: String -> String -> IO ()
-runTest day test = do
-  putStr ("Result of test " ++ test ++ ": ")
-  t1 <- Loader.getResult ("d" ++ day ++ "test" ++ test) False
-  return t1
+sol :: String -> String -> (String,Bool,String)
+sol day part = (("d" ++ day ++ "sol" ++ part),True,("Solution for part " ++ part ++ ": "))
+
+test :: String -> String -> (String,Bool,String)
+test day part = (("d" ++ day ++ "test" ++ part),False,("Result of test " ++ part ++ ": "))

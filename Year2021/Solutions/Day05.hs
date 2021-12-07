@@ -1,4 +1,4 @@
-module Solutions.Day05
+module Year2021.Solutions.Day05
 ( d5sol1,
   d5sol2,
   d5test1,
@@ -16,7 +16,7 @@ example :: [Line]
 example = [((0,9),(5,9)),((8,0),(0,8)),((9,4),(3,4)),((2,2),(2,1)),((7,0),(7,4)),((6,4),(2,0)),((0,9),(2,9)),((3,4),(1,4)),((0,0),(8,8)),((5,5),(8,2))]
 
 input :: IO [Line]
-input = parseInput <$> words <$> readFile "Inputs/Day05.txt"
+input = parseInput <$> words <$> readFile "Year2021/Inputs/Day05.txt"
 
 -- Favorite solution using List functions
 sol1List :: [Line] -> Int
