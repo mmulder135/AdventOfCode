@@ -1,10 +1,11 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day05
 ( d5sol1,
-  d5sol2,
-  d5test1,
-  d5test2
+  d5sol2
 )
 where
+import Test.QuickCheck
+import Test.QuickCheck.All
 import qualified Data.Map as Map
 import Data.List (sort, group)
 
@@ -143,15 +144,15 @@ split x = foldr f [[]]  x
       f c l@(x:xs) | c == ',' = []:l
                    | otherwise = (c:x):xs
 
-e1, e2 :: Int
-e1 = 5
-e2 = 12
-
 d5sol1 :: IO Int
 d5sol1 = sol1List <$> input
 d5sol2 :: IO Int
 d5sol2 = sol2List <$> input
-d5test1 :: Bool
-d5test1 = sol1List example == e1
-d5test2 :: Bool
-d5test2 = sol2List example == e2
+prop_d5test1 :: Bool
+prop_d5test1 = sol1List example == 5
+prop_d5test2 :: Bool
+prop_d5test2 = sol2List example == 12
+
+-- QuickCheck
+return []
+check = $quickCheckAll

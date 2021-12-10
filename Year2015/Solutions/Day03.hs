@@ -1,15 +1,14 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2015.Solutions.Day03
     (
     d3sol1,
-    d3sol2,
-    d3test1,
-    d3test2
+    d3sol2
     )
 where
+import Test.QuickCheck
+import Test.QuickCheck.All
 import Data.Set
 
-example :: String
-example = "^v^v^v^v^v"
 input :: IO String
 input = readFile "Year2015/Inputs/Day03.txt"
 
@@ -35,14 +34,18 @@ santa :: String -> String
 santa (x:y:xs) = y : santa xs
 santa _ = []
 
-e1, e2 :: Int
-e1 = 2
-e2 = 11
 d3sol1 :: IO Int
 d3sol1 = sol1 <$> input
 d3sol2 :: IO Int
 d3sol2 = sol2 <$> input
-d3test1 :: Bool
-d3test1 = sol1 example == e1
-d3test2 :: Bool
-d3test2 = sol2 example == e2
+
+prop_test1_1 = sol1 ">" == 2
+prop_test1_2 = sol1 "^>v<" == 4
+prop_test1_3 = sol1 "^v^v^v^v^v" == 2
+prop_test2_1 = sol2 "^v" == 3
+prop_test2_2 = sol2 "^>v<" == 3
+prop_test2_3 = sol2 "^v^v^v^v^v" == 11
+
+-- QuickCheck
+return []
+check = $quickCheckAll

@@ -1,13 +1,13 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2015.Solutions.Day01
   (
     d1sol1,
-    d1sol2,
-    d1test1,
-    d1test2
+    d1sol2
   )
 where
-example :: String
-example = "))((((("
+import Test.QuickCheck
+import Test.QuickCheck.All
+
 input :: IO String
 input = readFile "Year2015/Inputs/Day01.txt"
 
@@ -26,15 +26,17 @@ search y z (x:xs)
     | x == '(' = search (y + 1) (z+1) xs
     | x == ')' = search (y - 1) (z+1) xs
 
-e1, e2 :: Int
-e1 = 3
-e2 = 1
-
 d1sol1 :: IO Int
 d1sol1 = sol1 <$> input
 d1sol2 :: IO Int
 d1sol2 = sol2 <$> input
-d1test1 :: Bool
-d1test1 = sol1 example == e1
-d1test2 :: Bool
-d1test2 = sol2 example == e2
+
+prop_test1_1 = sol1 "(())" == 0
+prop_test1_2 = sol1 "()()" == 0
+prop_test1_3 = sol1 "(()(()(" == 3
+prop_test1_4 = sol1 ")())())" == -3
+prop_test2_1 = sol2 ")" == 1
+prop_test2_2 = sol2 "()())" == 5
+-- QuickCheck
+return []
+check = $quickCheckAll

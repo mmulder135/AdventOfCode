@@ -1,11 +1,12 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day09
     (
     d9sol1,
-    d9sol2,
-    d9test1,
-    d9test2
+    d9sol2
     )
 where
+import Test.QuickCheck
+import Test.QuickCheck.All
 import Data.List (transpose, intersect, sort, sortBy)
 import qualified Data.Set as Set
 import Data.Tuple (swap)
@@ -69,7 +70,11 @@ d9sol1 :: IO Int
 d9sol1 = sol1 <$> input
 d9sol2 :: IO Int
 d9sol2 = sol2 <$> input
-d9test1 :: Bool
-d9test1 = sol1 example == e1
-d9test2 :: Bool
-d9test2 = sol2 example == e2
+prop_d9test1 :: Bool
+prop_d9test1 = sol1 example == e1
+prop_d9test2 :: Bool
+prop_d9test2 = sol2 example == e2
+
+-- QuickCheck
+return []
+check = $quickCheckAll

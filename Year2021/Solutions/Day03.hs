@@ -1,18 +1,13 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day03
 ( d3sol1,
-  d3sol2,
-  d3test1,
-  d3test2
+  d3sol2
 )
 where
+import Test.QuickCheck
+import Test.QuickCheck.All
 import Data.Char
 import Data.List
-
-sol1 :: [String] -> Int
-sol1 = power_cons
-
-sol2 :: [String] -> Int
-sol2 = life_sup_rating
 
 example :: [String]
 example = ["00100","11110","10110","10111","10101","01111","00111","11100","10000","11001","00010","01010"]
@@ -91,15 +86,16 @@ co2_scrub x y
       | x >= y = '0'
       | otherwise = '1'
 
-e1, e2 :: Int
-e1 = 198
-e2 = 230
-
 d3sol1 :: IO Int
-d3sol1 = sol1 <$> input
+d3sol1 = power_cons <$> input
 d3sol2 :: IO Int
-d3sol2 = sol2 <$> input
-d3test1 :: Bool
-d3test1 = sol1 example == e1
-d3test2 :: Bool
-d3test2 = sol2 example == e2
+d3sol2 = life_sup_rating <$> input
+
+prop_d3test1 :: Bool
+prop_d3test1 = power_cons example == 198
+prop_d3test2 :: Bool
+prop_d3test2 = life_sup_rating example == 230
+
+-- QuickCheck
+return []
+check = $quickCheckAll

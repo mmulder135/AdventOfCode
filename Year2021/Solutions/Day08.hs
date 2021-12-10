@@ -1,9 +1,10 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day08
     ( d8sol1,
-      d8sol2,
-      d8test1,
-      d8test2
+      d8sol2
     ) where
+import Test.QuickCheck
+import Test.QuickCheck.All
 import Data.List.Utils (split)
 import Data.List ((\\),filter,map,sort,foldr)
 import Data.Map (insert,Map,empty,lookup,fromList,toList)
@@ -112,10 +113,13 @@ d8sol1 :: IO Int
 d8sol1 = sol1 <$> input
 d8sol2 :: IO Int
 d8sol2 = sol2 <$> input
-d8test1 :: Bool
-d8test1 = sol1 exampleL == e1
-d8test2 :: Bool
-d8test2 = sol2 exampleL == e2
+prop_d8test1 :: Bool
+prop_d8test1 = sol1 exampleL == e1
+prop_d8test2 :: Bool
+prop_d8test2 = sol2 exampleL == e2
 
 exampleL :: [String]
 exampleL = ["be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe","edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc","fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg","fbegcd cbd adcefb dageb afcb bc aefdc ecdab fgdeca fcdbega | efabcd cedba gadfec cb","aecbfdg fbg gf bafeg dbefa fcge gcbea fcaegb dgceab fcbdga | gecf egdcabf bgf bfgea","fgeab ca afcebg bdacfeg cfaedg gcfdb baec bfadeg bafgc acf | gebdcfa ecba ca fadegcb","dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf | cefg dcbef fcge gbcadfe","bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef","egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb","gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce"]
+-- QuickCheck
+return []
+check = $quickCheckAll

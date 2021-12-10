@@ -1,9 +1,10 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day02
 ( d2sol1,
-  d2sol2,
-  d2test1,
-  d2test2
+  d2sol2
 ) where
+import Test.QuickCheck
+import Test.QuickCheck.All
 
 data Instr = Forward Int | Down Int | Up Int
   deriving (Show)
@@ -51,15 +52,15 @@ parseInput (x:y:zs)
     | l == 'u' = Up (read y) : parseInput zs
       where l = head x
 
-e1, e2 :: Int
-e1 = 150
-e2 = 900
-
 d2sol1 :: IO Int
 d2sol1 = sol1 <$> input
 d2sol2 :: IO Int
 d2sol2 = sol2 <$> input
-d2test1 :: Bool
-d2test1 = sol1 example == e1
-d2test2 :: Bool
-d2test2 = sol2 example == e2
+prop_d2test1 :: Bool
+prop_d2test1 = sol1 example == 150
+prop_d2test2 :: Bool
+prop_d2test2 = sol2 example == 900
+
+-- QuickCheck
+return []
+check = $quickCheckAll

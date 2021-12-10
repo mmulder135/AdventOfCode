@@ -1,10 +1,11 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day01
 ( d1sol1,
-  d1sol2,
-  d1test1,
-  d1test2
+  d1sol2
 )
 where
+import Test.QuickCheck
+import Test.QuickCheck.All
 
 example :: [Int]
 example = [199,200,208,210,200,207,240,269,260,263]
@@ -28,13 +29,13 @@ sliding :: [Int] -> [Int]
 sliding (x:y:z:xs) = (x+y+z) : sliding (y:z:xs)
 sliding _ = []
 
-e1, e2 :: Int
-e1 = 7
-e2 = 5
-
 d1sol1, d1sol2 :: IO Int
 d1sol1 = sol1 <$> input
 d1sol2 = sol2 <$> input
-d1test1, d1test2 :: Bool
-d1test1 = sol1 example == e1
-d1test2 = sol2 example == e2
+
+prop_d1test1 = sol1 example == 7
+prop_d1test2 = sol2 example == 5
+
+-- QuickCheck
+return []
+check = $quickCheckAll

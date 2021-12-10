@@ -1,10 +1,11 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day07
 ( d7sol1,
-  d7sol2,
-  d7test1,
-  d7test2
+  d7sol2
 )
 where
+import Test.QuickCheck
+import Test.QuickCheck.All
 import Data.List.Utils (split)
 import Data.List (sort)
 
@@ -45,7 +46,11 @@ d7sol1 :: IO Int
 d7sol1 = sol1 <$> input
 d7sol2 :: IO Int
 d7sol2 = sol2 <$> input
-d7test1 :: Bool
-d7test1 = sol1 example == e1
-d7test2 :: Bool
-d7test2 = sol2 example == e2
+prop_d7test1 :: Bool
+prop_d7test1 = sol1 example == e1
+prop_d7test2 :: Bool
+prop_d7test2 = sol2 example == e2
+
+-- QuickCheck
+return []
+check = $quickCheckAll

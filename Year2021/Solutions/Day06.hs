@@ -1,9 +1,10 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day06
     ( d6sol1,
-      d6sol2,
-      d6test1,
-      d6test2
+      d6sol2
     ) where
+import Test.QuickCheck
+import Test.QuickCheck.All
 import Data.List
 import Data.List.Utils
 import qualified Data.MultiSet as MS
@@ -77,7 +78,11 @@ d6sol1 :: IO Int
 d6sol1 = sol1 <$> input
 d6sol2 :: IO Int
 d6sol2 = sol2 <$> input
-d6test1 :: Bool
-d6test1 = sol1 example == e1
-d6test2 :: Bool
-d6test2 = sol2 example == e2
+prop_d6test1 :: Bool
+prop_d6test1 = sol1 example == e1
+prop_d6test2 :: Bool
+prop_d6test2 = sol2 example == e2
+
+-- QuickCheck
+return []
+check = $quickCheckAll
