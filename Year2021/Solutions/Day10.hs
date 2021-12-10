@@ -9,8 +9,6 @@ where
 import Data.Filter (mapMaybe)
 import Data.List (sort)
 
-type Stack a = [a]
-
 example :: [String]
 example = ["[({(<(())[]>[[{[]{<()<>>","[(()[<>])]({[<{<<[]>>(","{([(<{}[<>[]}>{[]{[(<()>","(((({<>}<{<{<>}{[]{[]{}","[[<[([]))<([[{}[[()]]]","[{[{({}]{}}([{[{{{}}([]","{<[[]]>}<{[{[{[]{()[[[]","[<(<(<(<{}))><([]([]()","<{([([[(<>()){}]>(<<{{","<{([{{}}[<[[[<>{}]]]>[]]"]
 
@@ -18,27 +16,17 @@ input :: IO [String]
 input = lines <$> readFile "Year2021/Inputs/Day10.txt"
 
 sol1 :: [String] -> Int
-sol1 = sum . map charScore . mapMaybe (\(c,_) -> c) . map (flip parse empty)
+sol1 = sum . map charScore . mapMaybe fst . map (flip parse [])
 sol2 :: [String] -> Int
-sol2 = middle . sort . map (foldl (\x y -> x * 5 + y) 0) . map (map compScore) . mapMaybe (\(_,s) -> s) . map (flip parse empty)
+sol2 = middle . sort . map (foldl (\x y -> x * 5 + y) 0) . map (map compScore) . mapMaybe snd . map (flip parse [])
 
-parse :: String -> Stack Char -> (Maybe Char,Maybe (Stack Char))
+parse :: String -> [Char] -> (Maybe Char,Maybe [Char])
 parse [] stack = (Nothing, Just stack)
-parse (x:xs) stack
-      | x `elem` opening = parse xs $ push x stack
+parse (x:xs) [] = parse xs [x]
+parse (x:xs) stack@(h:rest)
+      | x `elem` opening = parse xs (x:stack)
       | x == matching h = parse xs rest
       | otherwise = (Just x, Nothing)
-        where
-          (h,rest) = pop stack
-
-empty :: Stack a
-empty = []
-
-push :: a -> Stack a -> Stack a
-push x xs = x:xs
-
-pop :: Stack a -> (a, Stack a)
-pop (x:xs) = (x, xs)
 
 opening :: [Char]
 opening = ['(','[','{','<']
@@ -62,12 +50,11 @@ compScore '{' = 3
 compScore '<' = 4
 
 middle :: [a] -> a
-middle xs = head $ drop (length xs `div ` 2) xs
+middle xs = xs !! (length xs `div ` 2)
 
 e1, e2 :: Int
 e1 = 26397
 e2 = 288957
-
 
 d10sol1 :: IO Int
 d10sol1 = sol1 <$> input

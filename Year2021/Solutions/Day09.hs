@@ -23,17 +23,17 @@ sol1 xs = sum $ map (+1) $  map (\(x,y) -> xs !! x !! y) $ lowPoints xs
 sol2 :: [[Int]] -> Int
 sol2 xs = foldr (*) 1 $ take 3 $ sortBy (flip compare) $ map (findBasinSize xs)  $ lowPoints xs
 
-lowPoints :: [[Int]] -> [(Int,Int)]
+lowPoints :: [[Int]] -> [(Int,Int)] -- Intersection of horizontal lowpoints and vertical lowpoints
 lowPoints xs = intersect (coords xs) (map swap $ coords $ transpose xs)
 
-coords :: [[Int]] -> [(Int,Int)]
-coords = concatMap (\(x,ys) -> zip (repeat x) $ map (\(i,b) -> i) ys) .zip [0..] . map (filter (\(i,b) -> b)) . map (zip [0..]) . map findLow . map (9:)
+coords :: [[Int]] -> [(Int,Int)] -- Given a grid get coordinates of lowPoints looking only in horizontal direction
+coords = concatMap (\(x,ys) -> zip (repeat x) $ map fst ys) . zip [0..] . map (filter snd) . map (zip [0..]) . map findLow . map (9:)
 
-findLow :: [Int] -> [Bool]
+findLow :: [Int] -> [Bool] -- True if lower than neignbours, False otherwise. Keeps ordering
 findLow [x,y] = [x > y]
 findLow (x:y:z:xs) = (y < x && y < z): findLow (y:z:xs)
 
--- This could be simplified by only using lists (or sets) instead of this weird combination
+-- Get basin size of basin of lowPoint c
 findBasinSize :: [[Int]] -> (Int,Int) -> Int
 findBasinSize xs c = Set.size $ findBasin (Set.empty) (Set.fromList [c]) xs
 
@@ -44,8 +44,9 @@ findBasin oldSet newSet xs
   where
     current = Set.union oldSet newSet
     dif = Set.difference newSet oldSet
-    newFrontier = Set.fromList $ concatMap (\c -> horizontalBasin c xs ++ verticalBasin c xs) $ Set.toList dif
+    newFrontier = Set.fromList $ concatMap (\c -> horizontalBasin c xs ++ verticalBasin c xs) dif
 
+-- Find all spots next to (left or right) (x,y) that are part of current basin
 horizontalBasin :: (Int,Int) -> [[Int]] -> [(Int,Int)]
 horizontalBasin (x,y) xs = map (\(y',v) -> (x,y')) res
   where
@@ -56,6 +57,7 @@ horizontalBasin (x,y) xs = map (\(y',v) -> (x,y')) res
     lres = zip [y-1,y-2..] lr
     res = sort $ lres ++ rres
 
+-- Find all spots below or above c that are part of current basin
 verticalBasin :: (Int,Int) -> [[Int]] -> [(Int,Int)]
 verticalBasin c xs = map swap $ horizontalBasin (swap c) $ transpose xs
 
