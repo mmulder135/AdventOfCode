@@ -14,3 +14,4 @@ import Year2021.Solutions.Day08 as Export
 import Year2021.Solutions.Day09 as Export
 import Year2021.Solutions.Day10 as Export
 import Year2021.Solutions.Day11 as Export
+import Year2021.Solutions.Day12 as Export
