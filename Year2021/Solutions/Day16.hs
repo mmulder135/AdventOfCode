@@ -8,6 +8,7 @@ where
 import Test.QuickCheck
 import Test.QuickCheck.All
 import Data.Char (digitToInt)
+import Data.List (foldl')
 
 type Version = Int
 type Type = Int
@@ -31,13 +32,12 @@ evaluate (Operator _ t subs)
       | t == 7 = comp (==) children
         where
           children = map evaluate subs :: [Int]
-          comp f [h,t]
-                  | f h t = 1
-                  | otherwise = 0
+          comp :: (a -> a -> Bool) -> [a] -> Int
+          comp f [h,t] = fromEnum $ f h t
 
 sumVersions :: Packet -> Int
 sumVersions (Literal v _) = v
-sumVersions (Operator v _ ps) = v + foldr (\a b -> b + sumVersions a) 0 ps
+sumVersions (Operator v _ ps) = v + sum (map sumVersions ps)
 
 parsePacket :: String -> (Packet,String)
 parsePacket bin
@@ -45,12 +45,19 @@ parsePacket bin
   | ltyp == '0' = (Operator v typ sub0, left0)
   | otherwise = (Operator v typ sub1, left1)
   where
-    (val, litleft) = getValue "" body
+    (val, litleft) = getLiteralValue "" body
     (v,rest) = splitVal bin
     (typ, body) = splitVal rest
     (ltyp:subs) = body
     (sub0, left0) = parseSubPackets0 subs
     (sub1, left1) = parseSubPackets1 subs
+
+getLiteralValue :: String -> String -> (String, String)
+getLiteralValue ps xs
+  | h == '1' =  getLiteralValue (ps ++ part) rest
+  | otherwise = ((ps ++ part), rest)
+    where
+      ((h:part), rest) = splitAt 5 xs
 
 parseSubPackets0 :: String -> ([Packet],String)
 parseSubPackets0 xs = (parsePackets subs, left)
@@ -76,13 +83,6 @@ parsePackets [] = []
 parsePackets xs = p : parsePackets rest
     where
       (p, rest) = parsePacket xs
-
-getValue :: String -> String -> (String, String)
-getValue ps xs
-  | h == '1' =  getValue (ps ++ part) rest
-  | otherwise = ((ps ++ part), rest)
-    where
-      ((h:part), rest) = splitAt 5 xs
 
 splitVal :: String -> (Int, String)
 splitVal xs = (binToDec h, rest)
@@ -111,7 +111,7 @@ hexToBin' 'E' = "1110"
 hexToBin' 'F' = "1111"
 
 binToDec :: String -> Int
-binToDec  = foldr (\a b -> (digitToInt a) + 2 * b) 0 . reverse
+binToDec  = foldl' (\b a -> (digitToInt a) + 2 * b) 0
 
 d16sol1 :: IO Int
 d16sol1 = sol1 <$> input
@@ -123,7 +123,7 @@ input = readFile "Year2021/Inputs/Day16.txt"
 
 prop_hextodex = hexToBin "D2FE28" == "110100101111111000101000"
 prop_version = 6 == fst (splitVal $ hexToBin "D2FE28")
-prop_getvalue = "011111100101" == fst (getValue "" $ drop 6 $ hexToBin "D2FE28")
+prop_getvalue = "011111100101" == fst (getLiteralValue "" $ drop 6 $ hexToBin "D2FE28")
 prop_11 = 16 == sol1 "8A004A801A8002F478"
 prop_12 = 12 == sol1 "620080001611562C8802118E34"
 prop_13 = 23 == sol1 "C0015000016115A2E0802F182340"
