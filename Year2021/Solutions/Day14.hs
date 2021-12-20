@@ -9,7 +9,7 @@ import Test.QuickCheck
 import Test.QuickCheck.All
 import Data.Map (Map)
 import qualified Data.Map as Map
-import Data.List (group, sort, tails)
+import Data.List (tails)
 import Data.List.Utils (split)
 import Data.MultiSet (MultiSet)
 import qualified Data.MultiSet as MS
@@ -37,18 +37,18 @@ runInsertion m ms i = runInsertion m (insertion ms m) (i-1)
 insertion :: Polymer -> Rules-> Polymer
 insertion ms m = MS.concatMap (\[a,b] -> let c = m Map.! [a,b] in [[a,c],[c,b]]) ms
 
-input :: IO (Polymer, Rules)
-input = parse <$> lines <$> readFile "Year2021/Inputs/Day14.txt"
-
-example :: (Polymer, Rules)
-example =  parse ["NNCB","","CH -> B","HH -> N","CB -> H","NH -> C","HB -> C","HC -> B","HN -> C","NN -> C","BH -> H","NC -> B","NB -> B","BN -> B","BB -> N","BC -> B","CC -> N","CN -> C"]
-
 parse :: [String] -> (Polymer, Rules)
 parse xs = (ms,m)
       where
         [str,instr] = split [""] xs
         ms = MS.fromList $ filter (\x -> length x == 2) $  map (take 2) $ tails $ head str
         m = Map.fromList $ map (\[x,y] -> (x, head y)) $ map (split " -> ") instr
+
+input :: IO (Polymer, Rules)
+input = parse <$> lines <$> readFile "Year2021/Inputs/Day14.txt"
+
+example :: (Polymer, Rules)
+example =  parse ["NNCB","","CH -> B","HH -> N","CB -> H","NH -> C","HB -> C","HC -> B","HN -> C","NN -> C","BH -> H","NC -> B","NB -> B","BN -> B","BB -> N","BC -> B","CC -> N","CN -> C"]
 
 d14sol1 :: IO Int
 d14sol1 = sol1 <$> input
