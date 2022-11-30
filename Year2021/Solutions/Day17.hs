@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Year2021.Solutions.Day17
   (
-    -- d0sol1,
-    -- d0sol2
+    d17sol1,
+    d17sol2
   )
 where
 import Test.QuickCheck
@@ -45,10 +45,10 @@ step ((xv,yv),(x,y)) =  ((xv - dx, yv - 1), (x + xv, y + yv))
       where
         dx = if xv == 0 then 0 else signum (x + xv)
 
--- d0sol1 :: IO Int
--- d0sol1 = sol1 <$> input
--- d0sol2 :: IO Int
--- d0sol2 = sol2 <$> input
+d17sol1 :: Int
+d17sol1 = sol1 input
+d17sol2 :: Int
+d17sol2 = sol2 input
 prop_sol1 = 45 == sol1 a
 prop_sol1i = 5565 == sol1 input
 prop_sol2 = 112 == sol2 a

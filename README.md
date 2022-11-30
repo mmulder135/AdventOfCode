@@ -11,7 +11,9 @@ Note that the solutions get loaded dynamically and are thus compiled during runt
 Requires [hint](https://hackage.haskell.org/package/hint),
 [MissingH](https://hackage.haskell.org/package/MissingH),
 [multiset](https://hackage.haskell.org/package/multiset-0.3.4.3),
-[Data-Filter](https://hackage.haskell.org/package/data-filter-0.1.0.0/docs/Data-Filter.html)
+[data-filter](https://hackage.haskell.org/package/data-filter-0.1.0.0/docs/Data-Filter.html),
+[QuicCheck](https://hackage.haskell.org/package/QuickCheck),
+[PSQueue](https://hackage.haskell.org/package/PSQueue)
 .
 
 ## License

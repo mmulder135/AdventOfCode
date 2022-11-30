@@ -17,3 +17,7 @@ import Year2021.Solutions.Day11 as Export
 import Year2021.Solutions.Day12 as Export
 import Year2021.Solutions.Day13 as Export
 import Year2021.Solutions.Day14 as Export
+import Year2021.Solutions.Day15 as Export
+import Year2021.Solutions.Day16 as Export
+import Year2021.Solutions.Day17 as Export
+import Year2021.Solutions.Day18 as Export
