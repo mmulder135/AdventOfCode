@@ -92,9 +92,11 @@ parse1 = (Pair (Leaf 1) (Leaf 2)) == read "[1,2]"
 parse2 = (Pair (Pair (Leaf 3) (Leaf 4)) (Leaf 5)) == read "[[3,4],5]"
 parse3 = (Pair (Pair (Leaf 1) (Leaf 9)) (Pair (Leaf 8) (Leaf 5))) == read "[[1,9],[8,5]]"
 parse4 = (Pair (Pair (Pair (Pair (Pair (Leaf 9) (Leaf 8)) (Leaf 1)) (Leaf 2)) (Leaf 3)) (Leaf 4)) == read "[[[[[9,8],1],2],3],4]"
+
 prop_split = split1 && split2
 split1 = Nothing == split (read "[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
 split2 = Just (read "[[[[0,7],4],[[7,8],[0,13]]],[1,1]]") == split (read "[[[[0,7],4],[15,[0,13]]],[1,1]]")
+
 prop_explode = explode1 && explode2 && explode3 && explode4 && explode5 && explode6
 explode1 = (Just (read "[[[[0,9],2],3],4]")) == explode (read "[[[[[9,8],1],2],3],4]")
 explode2 = (Just (read "[7,[6,[5,[7,0]]]]")) == explode (read "[7,[6,[5,[4,[3,2]]]]]")
@@ -102,10 +104,13 @@ explode3 = (Just (read "[[6,[5,[7,0]]],3]")) == explode (read "[[6,[5,[4,[3,2]]]
 explode4 = (Just (read "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]")) == explode (read "[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]")
 explode5 = (Just (read "[[3,[2,[8,0]]],[9,[5,[7,0]]]]")) == explode (read "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]")
 explode6 = Nothing == explode (read "[[[[0,7],4],[15,[0,13]]],[1,1]]")
+
 prop_reduce = (read "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]") == reduce (read "[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
+
 prop_calc = calc1 && calc2
 calc1 = read "[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]" == calc example
 calc2 = read "[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]" == calc example2
+
 prop_sol1 = 4140 == sol1 example2
 prop_sol2 = 3993 == sol2 example2
 -- QuickCheck
