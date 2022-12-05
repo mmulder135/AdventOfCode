@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Year2022.Solutions.Day0
+module Year2022.Solutions.Day03
   (
-    -- d0sol1,
-    -- d0sol2
+    d3sol1,
+    d3sol2
   )
 where
 import Test.QuickCheck
@@ -36,10 +36,10 @@ findBadge (first:second:third:xs) = head $ filter (\x -> x `elem` common) third
         where
           common = filter (\x -> x `elem` second) first
 
-d0sol1 :: IO Int
-d0sol1 = sol1 <$> input
-d0sol2 :: IO Int
-d0sol2 = sol2 <$> input
+d3sol1 :: IO Int
+d3sol1 = sol1 <$> input
+d3sol2 :: IO Int
+d3sol2 = sol2 <$> input
 
 input :: IO [String]
 input = lines <$> readFile "Year2022/Inputs/Day03.txt"

@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Year2022.Solutions.Day0
+module Year2022.Solutions.Day02
   (
-    -- d0sol1,
-    -- d0sol2
+    d2sol1,
+    d2sol2
   )
 where
 import Test.QuickCheck
@@ -86,10 +86,10 @@ match2ToMatch (t, Lose)
       | t == Scissors = (t, Paper)
 
 
-d0sol1 :: IO Int
-d0sol1 = sol1 <$> parse <$> input
-d0sol2 :: IO Int
-d0sol2 = sol1 <$> parse2 <$> input
+d2sol1 :: IO Int
+d2sol1 = sol1 <$> parse <$> input
+d2sol2 :: IO Int
+d2sol2 = sol1 <$> parse2 <$> input
 
 prop_d2test1 = sol1 example == 15
 prop_parse = example == parse exampleText

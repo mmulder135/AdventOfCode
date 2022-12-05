@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Year2022.Solutions.Day0
+module Year2022.Solutions.Day04
   (
-    -- d0sol1,
-    -- d0sol2
+    d4sol1,
+    d4sol2
   )
 where
 import Test.QuickCheck
@@ -29,10 +29,10 @@ parseLine :: String -> [[Int]]
 parseLine = map (map (read::String -> Int)) . map (split "-") . split ","
 
 
-d0sol1 :: IO Int
-d0sol1 = sol1 <$> input
-d0sol2 :: IO Int
-d0sol2 = sol2 <$> input
+d4sol1 :: IO Int
+d4sol1 = sol1 <$> input
+d4sol2 :: IO Int
+d4sol2 = sol2 <$> input
 
 input :: IO [String]
 input = lines <$> readFile "Year2022/Inputs/Day04.txt"

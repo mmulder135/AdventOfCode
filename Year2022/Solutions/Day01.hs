@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Year2022.Solutions.Day01
   (
-    -- d0sol1,
-    -- d0sol2
+    d1sol1,
+    d1sol2
   )
 where
 import Test.QuickCheck
@@ -29,10 +29,10 @@ sol2 = sum . take 3 . reverse . sort . map sum
 input :: IO String
 input = readFile "Year2022/Inputs/Day01.txt"
 
-d01sol1 :: IO Int
-d01sol1 = sol1 <$> parse <$> input
-d01sol2 :: IO Int
-d01sol2 = sol2 <$> parse <$>input
+d1sol1 :: IO Int
+d1sol1 = sol1 <$> parse <$> input
+d1sol2 :: IO Int
+d1sol2 = sol2 <$> parse <$>input
 
 prop_d1test1 :: Bool
 prop_d1test1 = sol1 example == 24000
