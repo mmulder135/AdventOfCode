@@ -7,6 +7,7 @@ module Year2022.Solutions.Day04
 where
 import Test.QuickCheck
 import Test.QuickCheck.All
+import Data.List (intersect)
 import Data.List.Utils (split)
 
 sol1 :: [String] -> Int
@@ -20,8 +21,9 @@ doesInclude str = (x1 <= y1 && x2 >= y2) || (x1 >= y1 && x2 <= y2)
   where
     [[x1, x2], [y1, y2]] =  parseLine str
 
+-- overlap could also be determined with (x,y),(x1, y1) ===> x >= x1 && x <= y1 || x1 >= x && x1 <= y
 overlap :: String -> [Int]
-overlap str = filter (\x -> x `elem` snd) fst
+overlap str = intersect fst snd
   where
     [fst, snd] = map (\[x,y] -> drop (x - 1) $ take y $ [1..]) $ parseLine str
 
