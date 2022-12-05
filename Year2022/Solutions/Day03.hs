@@ -7,7 +7,8 @@ module Year2022.Solutions.Day03
 where
 import Test.QuickCheck
 import Test.QuickCheck.All
-import Data.Char
+import Data.List (intersect)
+import Data.Char (ord, isLower)
 
 sol1 :: [String] -> Int
 sol1 = sum . map letterToNum . map findDouble
@@ -21,10 +22,10 @@ splitEvery n xs = as : splitEvery n bs
   where (as,bs) = splitAt n xs
 
 findDouble :: String -> Char
-findDouble str = head $ filter (\x -> x `elem` second) first
-        where
-          (first, second) = splitAt i str
-          i = (length str) `div` 2
+findDouble = head . uncurry intersect . splitComps
+
+splitComps :: [a] -> ([a], [a])
+splitComps str = splitAt ((length str) `div` 2) str
 
 letterToNum :: Char -> Int
 letterToNum x 
@@ -32,9 +33,7 @@ letterToNum x
         | otherwise = ord x - 38
 
 findBadge :: [String] -> Char
-findBadge (first:second:third:xs) = head $ filter (\x -> x `elem` common) third
-        where
-          common = filter (\x -> x `elem` second) first
+findBadge = head . foldr1 intersect
 
 d3sol1 :: IO Int
 d3sol1 = sol1 <$> input
