@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Year2022.Solutions.Day0
+module Year2022.Solutions.Day06
   (
-    d7sol1,
-    d7sol2
+    d6sol1,
+    d6sol2
   )
 where
 import Test.QuickCheck
@@ -23,10 +23,10 @@ findUniqueWindow n str
       window = take n str
 
 
-d7sol1 :: IO Int
-d7sol1 = sol1 <$> input
-d7sol2 :: IO Int
-d7sol2 = sol2 <$> input
+d6sol1 :: IO Int
+d6sol1 = sol1 <$> input
+d6sol2 :: IO Int
+d6sol2 = sol2 <$> input
 
 input :: IO String
 input = readFile "Year2022/Inputs/Day06.txt"
