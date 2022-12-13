@@ -17,41 +17,40 @@ sol1 input = Set.size $ Set.union visH visV
   where
     options = Set.fromList [ (x,y) | x <- [0..len], y <- [0..height]]
     height = length matrix - 1
-    len = (length $ head matrix) -1
+    len = (length $ head matrix) - 1
     matrix = getIntMatrix input
     transposed = transpose matrix
-    visH = Set.filter (isVisibleH matrix) options
-    visV = Set.filter (isVisibleH transposed . swap) options
+    visH = Set.filter (isVisibleHorizontal matrix) options
+    visV = Set.filter (isVisibleHorizontal transposed . swap) options
+
+isVisibleHorizontal :: [[Int]] -> (Int, Int) -> Bool
+isVisibleHorizontal mtx (x,y) = visible left || visible right
+    where
+      (left, height : right) = splitAt x $ mtx !! y
+
+      visible :: [Int] -> Bool
+      visible xs = 0 == (length $ filter (>= height) xs)
 
 sol2 :: [String] -> Int
-sol2 input = last $ sort $ map (scenicScore matrix) options
+sol2 input = last $ sort $ scenicScores
   where
     matrix = getIntMatrix input
     options = [ (x,y) | x <- [0..len], y <- [0..height]]
     height = length matrix - 1
-    len = (length $ head matrix) -1
+    len = (length $ head matrix) - 1
+    transposed = transpose matrix
+    horizontal = map (getHorizontal matrix) options
+    vertical = map (getHorizontal transposed . swap) options
+    heights = map (\(x,y) -> matrix !! y !! x) options
+    allDirs = zipWith (++) horizontal vertical
+    dists = map getDists $ zip heights allDirs
+    scenicScores = map (foldl1 (*)) dists
+    
+getDists :: (Int, [[Int]]) -> [Int]
+getDists (height, views) = map (getViewingDist height) views
 
-isVisibleH :: [[Int]] -> (Int, Int) -> Bool
-isVisibleH mtx (x,y) = visible left || visible right
-    where
-      row = mtx !! y
-      (left, r) = splitAt x row
-      right = tail r
-      height = row !! x
-      visible :: [Int] -> Bool
-      visible xs = (length $ filter (>= height) xs) == 0
-
-scenicScore :: [[Int]] -> (Int, Int) -> Int 
-scenicScore mtx (x,y) = (amountVisibleH mtx (x,y)) * (amountVisibleH (transpose mtx) (y,x))
-
-amountVisibleH :: [[Int]] -> (Int, Int) -> Int
-amountVisibleH mtx (x,y) = foldl1 (*) $ map (getViewingDist height) [left, right]
-  where
-    row = mtx !! y
-    (l, r) = splitAt x row
-    right = tail r
-    left = reverse l
-    height = row !! x
+getHorizontal :: [[Int]] -> (Int, Int) -> [[Int]] -- get horizontal view from coord
+getHorizontal mtx (x,y) = (\(l, r) -> reverse l : tail r : []) $ splitAt x $ mtx !! y
 
 getViewingDist :: Int -> [Int] -> Int
 getViewingDist _ [] = 0
@@ -86,7 +85,6 @@ prop_vd1 = getViewingDist 5 [3] == 1
 prop_vd2 = getViewingDist 5 [5,2] == 1
 prop_vd3 = getViewingDist 5 [1,2] == 2
 prop_vd4 = getViewingDist 5 [3,5,3] == 2
-prop_ss = scenicScore (getIntMatrix example) (2,3) == 4
 prop_sol2 = sol2 example == 8
 -- QuickCheck
 return []
