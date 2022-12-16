@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Year2022.Solutions.Day0
+module Year2022.Solutions.Day09
   (
-    d8sol1,
-    d8sol2
+    d9sol1,
+    d9sol2
   )
 where
 import Test.QuickCheck
@@ -57,10 +57,10 @@ parseLine ('R':i) = replicate (read i) R
 parseLine ('D':i) = replicate (read i) D
 parseLine ('L':i) = replicate (read i) L
 
-d8sol1 :: IO Int
-d8sol1 = sol1 <$> input
-d8sol2 :: IO Int
-d8sol2 = sol2 <$> input
+d9sol1 :: IO Int
+d9sol1 = sol1 <$> input
+d9sol2 :: IO Int
+d9sol2 = sol2 <$> input
 
 prop_updatetail1    = updateTail ((0,0), (0,0))   == (0,0)
 prop_updatetailh1   = updateTail ((1,0), (0,0))   == (0,0)

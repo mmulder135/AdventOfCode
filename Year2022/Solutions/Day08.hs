@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Year2022.Solutions.Day0
+module Year2022.Solutions.Day08
   (
     d8sol1,
     d8sol2
