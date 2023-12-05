@@ -1,13 +1,9 @@
 module Year2023.Solutions.Day05 where
 import Data.List.Utils (split)
 
-
 data MapRule = MapRule {destStart :: Int, sourceStart :: Int, rangeLength :: Int} deriving Show
 type FullMap = [MapRule]
 data Almanac = Almanac {seeds :: [Int], maps :: [FullMap]} deriving Show
-
-seedToSoilMap :: FullMap
-seedToSoilMap = [MapRule 50 98 2, MapRule 52 50 48]
 
 example :: IO String
 example = readFile "Year2023/Inputs/Day05-example.txt"
@@ -30,29 +26,6 @@ useMap i (r:rules)  | diff >= 0 && diff < rangeLength r = diff + destStart r
         where
             diff = i - sourceStart r
 
------- PARSING 1 ----------
-parse :: String -> Almanac
-parse input = Almanac seeds maps
-    where
-        (seedStr:mapStrs) = split "\n\n" input
-        seeds = parseSeeds seedStr
-        maps = map parseMap mapStrs
-
--- seeds: 79 14 55 13
-parseSeeds :: String -> [Int]
-parseSeeds = map read . tail . words 
-
--- seed-to-soil map:
--- 50 98 2
--- 52 50 48
-parseMap :: String -> FullMap
-parseMap = map parseMapRule . tail . lines
-
--- 50 98 2
-parseMapRule :: String -> MapRule
-parseMapRule input = MapRule d s r
-    where
-        (d:s:r:_) = map read $ words input
 
 ------------ PART 2 -----------------
 type Range = (Int, Int)
@@ -69,31 +42,45 @@ type Range = (Int, Int)
 sol2 :: [Char] -> Int
 sol2 = minimum . map fst . uncurry (foldl useMapAllSeeds) . parseRange 
 
-useMapAllSeeds :: [Range] -> FullMap -> [Range]
+useMapAllSeeds :: [Range] -> FullMap -> [Range] -- Use one FullMap on all known ranges
 useMapAllSeeds seeds m = concatMap (`useMapRange` m) seeds 
 
 useMapRange :: Range -> FullMap -> [Range]
 useMapRange (s, e) []                   = [(s, e)]
 useMapRange (s, e) ((MapRule ds ss r):rules)    
-        | s >= se || e < ss             = useMapRange (s, e) rules
-        | s >= ss && e <  se            = [(s + diff, e + diff)]
-        | s >= ss && e >= se            = (s + diff, ds + r - 1) : useMapRange (se, e) rules
-        | s <  ss && e >= ss && e < se  = (ds, e + diff) : useMapRange (s, ss - 1) rules
-        | s <  ss && e >= ss && e >= se = (ds, ds + r - 1)  : useMapRange (s, ss - 1) rules ++ useMapRange (se, e) rules
+        | s >= se || e < ss             = useMapRange (s, e) rules                              -- completely outside range
+        | s >= ss && e <  se            = [(s + diff, e + diff)]                                -- completely inside range
+        | s >= ss && e >= se            = (s + diff, ds + r - 1) : useMapRange (se, e) rules    -- only first part in range
+        | s <  ss && e >= ss && e < se  = (ds, e + diff) : useMapRange (s, ss - 1) rules        -- only last part in range
+        | s <  ss && e >= ss && e >= se = (ds, ds + r - 1) : useMapRange (s, ss - 1) rules ++ useMapRange (se, e) rules -- middle part in range
         where
             diff = ds - ss
             se = ss + r 
 
 parseRange :: String -> ([Range], [FullMap])
-parseRange input = (seeds, maps)
+parseRange input = (makeSeedRanges seeds, maps)
     where
-        (seedStr:mapStrs) = split "\n\n" input
-        seeds = parseSeedsRange seedStr
-        maps = map parseMap mapStrs
-
-parseSeedsRange :: String -> [Range]
-parseSeedsRange = makeSeedRanges . map read . tail . words 
+        Almanac seeds maps = parse input
 
 makeSeedRanges :: [Int] -> [Range]
 makeSeedRanges [] = []
 makeSeedRanges (x:y:xs) = (x, x + y - 1) : makeSeedRanges xs
+
+------ PARSING  ----------
+parse :: String -> Almanac
+parse input = Almanac seeds maps
+    where
+        (seedStr:mapStrs) = split "\n\n" input
+        seeds = parseSeeds seedStr
+        maps = map parseMap mapStrs
+
+parseSeeds :: String -> [Int]
+parseSeeds = map read . tail . words 
+
+parseMap :: String -> FullMap
+parseMap = map parseMapRule . tail . lines
+
+parseMapRule :: String -> MapRule
+parseMapRule input = MapRule d s r
+    where
+        (d:s:r:_) = map read $ words input
