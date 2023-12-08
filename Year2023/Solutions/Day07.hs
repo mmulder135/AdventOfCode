@@ -7,27 +7,24 @@ example = "32T3K 765\nT55J5 684\nKK677 28\nKTJJT 220\nQQQJA 483"
 input :: IO String
 input = readFile "Year2023/Inputs/Day07.txt"
 
-data Hand = Hand {cards :: [Int], bid :: Int} deriving Show
-type ScoredHand = (Int, Hand)
+data Hand = Hand {cards :: [Int], bid :: Int, score :: Int} deriving (Show, Eq)
+
+instance Ord Hand where
+    (Hand c1 b1 s1) `compare` (Hand c2 b2 s2)
+            | s1 /= s2  = s1 `compare` s2
+            | otherwise = c1 `compare` c2
 
 sol1 :: String -> Int
-sol1 = sum . zipWith (\i h -> i * bid h) [1..] . sortHands . parse
+sol1 = sum . zipWith (\i h -> i * bid h) [1..] . sort . getScoredHands . parse
 
-sol2 :: String -> Int -- inserted sortHands and getScoredHands to avoid making new functions
-sol2 = sum . zipWith (\i h -> i * bid h) [1..] . map snd . sortBy compareScoredHands . map (\ x -> (scoreHand2 x, x)) . parse2
+sol2 :: String -> Int -- inserted getScoredHands to avoid making new functions
+sol2 = sum . zipWith (\i h -> i * bid h) [1..] . sort . map (\(Hand c b s) -> Hand c b $ scoreCards2 c). parse2
 
-sortHands :: [Hand] -> [Hand]
-sortHands = map snd . sortBy compareScoredHands . getScoredHands
+getScoredHands :: [Hand] -> [Hand]
+getScoredHands = map (\(Hand c b s) -> Hand c b $ scoreCards c)
 
-compareScoredHands :: ScoredHand -> ScoredHand -> Ordering
-compareScoredHands (i1,h1) (i2,h2)  | i1 /= i2 = compare i1 i2
-                                    | otherwise = compare (cards h1) (cards h2)
-
-getScoredHands :: [Hand] -> [ScoredHand]
-getScoredHands = map (\ x -> (scoreHand x, x))
-
-scoreHand :: Hand -> Int
-scoreHand = scoreGroup . sortBy (comparing Down) . map length . group . sort . cards
+scoreCards :: [Int] -> Int
+scoreCards = scoreGroup . sortBy (comparing Down) . map length . group . sort
     where
         scoreGroup :: [Int] -> Int
         scoreGroup [5] = 7
@@ -38,13 +35,12 @@ scoreHand = scoreGroup . sortBy (comparing Down) . map length . group . sort . c
         scoreGroup [2,1,1,1] = 2
         scoreGroup [1,1,1,1,1] = 1
 
-scoreHand2 :: Hand -> Int
-scoreHand2 hand | null filtered     = scoreHand hand
-                | otherwise         = scoreHand $ replaceInHand 1 replaceFor hand
+scoreCards2 :: [Int] -> Int
+scoreCards2 c   | null filtered     = scoreCards c
+                | otherwise         = scoreCards $ replace 1 replaceFor c
                 where
-                    filtered = filter (/=1) $ cards hand
+                    filtered = filter (/=1) c
                     replaceFor = mostCommon filtered
-
 
 mostCommon :: [Int] -> Int
 mostCommon = snd . maximum . map (\xs -> (length xs, head xs)) . group . sort
@@ -54,7 +50,7 @@ parse2 :: String -> [Hand]
 parse2 = map (replaceInHand 11 1) . parse
 
 replaceInHand :: Int -> Int -> Hand -> Hand
-replaceInHand f r (Hand c b) = Hand (replace f r c) b
+replaceInHand f r (Hand c b s) = Hand (replace f r c) b s
 
 replace :: Int -> Int -> [Int] -> [Int]
 replace f r = map (\x -> if x == f then r else x)
@@ -63,7 +59,7 @@ parse :: String -> [Hand]
 parse = map (parseLine . words) . lines
 
 parseLine :: [String] -> Hand
-parseLine [cards,bid] = Hand (map getCardValue cards) $ read bid
+parseLine [cards,bid] = Hand (map getCardValue cards) (read bid) 0
 parseLine _ = error "Invalid line"
 
 getCardValue :: Char -> Int
@@ -73,4 +69,3 @@ getCardValue 'Q' = 12
 getCardValue 'J' = 11
 getCardValue 'T' = 10
 getCardValue x = read [x]
-
